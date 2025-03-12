@@ -1,0 +1,32 @@
+# rabbitmq-queue-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rabbitmq-queue-creator
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+        - name: queue-creator
+          image: curlimages/curl:latest # Using curl image for simplicity
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # Wait for RabbitMQ to be ready (optional)
+              sleep 60
+
+              curl -i -u guest:guest \
+                -H "Content-Type: application/json" \
+                -X PUT http://rabbitmq:15672/api/queues/%2F/mp3 \
+                -d '{"auto_delete":false,"durable":true}'
+
+              curl -i -u guest:guest \
+                -H "Content-Type: application/json" \
+                -X PUT http://rabbitmq:15672/api/queues/%2F/video \
+                -d '{"auto_delete":false,"durable":true}'
+          env:
+            - name: RABBITMQ_HOST
+              value: "rabbitmq" # Should match your RabbitMQ service name
+      restartPolicy: OnFailure
+  backoffLimit: 4
