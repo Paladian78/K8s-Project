@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-init-job
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+        - name: postgres-init
+          image: postgres:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              until psql -h db -U paladian -d authdb -c "SELECT 1"; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 5
+              done
+              psql -h db -U paladian -d authdb -c "CREATE TABLE auth_user (id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,email VARCHAR (255) NOT NULL,password VARCHAR (255) NOT NULL);"
+              psql -h db -U paladian -d authdb -c "INSERT INTO auth_user (email, password) VALUES ('paladian.78@gmail.com', '123456');"
+              psql -h db -U paladian -d authdb -c "SELECT * from auth_user;"
+          env:
+            - name: PGPASSWORD
+              value: "paladian1234"
+      restartPolicy: OnFailure
