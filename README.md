@@ -264,7 +264,7 @@ Run the application through the following API calls:
   ```
 
   ```console
-   curl -X POST -F 'file=@./video.mp4' -H 'Authorization: Bearer <JWT Token>' http://nodeIP:30002/upload
+   curl -X POST -F 'file=@./assets/video.mp4' -H 'Authorization: Bearer <JWT Token>' http://nodeIP:30002/upload
   ```
 
   Check if you received the ID on your email.
