@@ -1,0 +1,24 @@
+ISTIO enable:
+
+kubectl label namespace new-app istio.io/rev=asm-1-22
+
+Commands to implement project:
+helm install mongo .\Helm_charts\MongoDB\
+helm install postgres .\Helm_charts\Postgres\
+helm install rabbit .\Helm_charts\RabbitMQ\
+
+kubectl apply -f .\src\auth-service\manifest\
+kubectl apply -f .\src\converter-service\manifest\
+kubectl apply -f .\src\gateway-service\manifest\
+kubectl apply -f .\src\notification-service\manifest\
+
+ kubectl apply -f .\Networking\istio\gateway.yaml
+ kubectl apply -f .\Networking\istio\destinationrule.yaml
+ kubectl apply -f .\Networking\istio\mtls.yaml
+
+TESTING:=>>
+curl -X POST http://4.156.50.154/login -u paladian.78@gmail.com:123456
+
+curl -X POST -F 'file=@./assets/video.mp4' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhbGFkaWFuLjc4QGdtYWlsLmNvbSIsImV4cCI6MTc0MjQ2MDcxOCwiaWF0IjoxNzQyMzc0MzE4LCJhZG1pbiI6dHJ1ZX0.6j2eNIl3PF_Bv0k9wuq5nkry1jMVf5ndu9KCnzb6RkY' http://4.156.50.154/upload
+
+curl --output ./assets/video.mp3 -X GET -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhbGFkaWFuLjc4QGdtYWlsLmNvbSIsImV4cCI6MTc0MjQ2MDcxOCwiaWF0IjoxNzQyMzc0MzE4LCJhZG1pbiI6dHJ1ZX0.6j2eNIl3PF_Bv0k9wuq5nkry1jMVf5ndu9KCnzb6RkY' "http://4.156.50.154/download?fid=67da85e33f27dc8c7a4d8987"
