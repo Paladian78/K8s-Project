@@ -4,7 +4,7 @@ metadata:
   name: istio-gateway
 spec:
   selector:
-    istio: aks-istio-ingressgateway-external
+    istio: ingressgateway
   servers:
   - port:
       number: 80
@@ -25,6 +25,6 @@ spec:
   http:
   - route:
     - destination:
-        host: gateway.first.svc.cluster.local
+        host: gateway.second.svc.cluster.local
         port:
           number: 8080
