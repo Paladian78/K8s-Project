@@ -25,6 +25,6 @@ spec:
   http:
   - route:
     - destination:
-        host: gateway.second.svc.cluster.local
+        host: gateway.third.svc.cluster.local
         port:
           number: 8080
